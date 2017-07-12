@@ -27,7 +27,7 @@
             </TableView>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1">
                <children>
-                  <Button mnemonicParsing="false" text="Refresh" />
+                  <Button mnemonicParsing="false" onAction="#refresh" text="Refresh" />
                </children>
             </HBox>
          </children>

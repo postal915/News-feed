@@ -2,7 +2,6 @@ package app;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
@@ -13,21 +12,19 @@ import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
 
+    public static ObservableList<News> fxCollections = FXCollections.observableArrayList();
     @FXML
     public TableView newsTV;
-
     @FXML
     public TableColumn<News, String> newsTC;
-
-    ObservableList<News> fxCollections = FXCollections.observableArrayList();
+    Request request = new Request();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         newsTC.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
+        request.start();
         newsTV.setItems(fxCollections);
     }
-
-    public void refresh(ActionEvent event) {
-
-    }
 }
+
+

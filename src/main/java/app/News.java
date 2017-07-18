@@ -74,4 +74,51 @@ public class News {
         this.related = related;
     }
 
+    public String getNewsItemId() {
+        return newsItemId;
+    }
+
+    public String getHeadLine() {
+        return headLine;
+    }
+
+    public String getAgency() {
+        return agency;
+    }
+
+    public String getDateLine() {
+        return dateLine;
+    }
+
+    public String getWebURL() {
+        return webURL;
+    }
+
+    public String getCaption() {
+        return caption;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public String getKeywords() {
+        return keywords;
+    }
+
+    public String getStory() {
+        return story;
+    }
+
+    public String getCommentCountUrl() {
+        return commentCountUrl;
+    }
+
+    public String getCommentFeedUrl() {
+        return commentFeedUrl;
+    }
+
+    public String getRelated() {
+        return related;
+    }
 }

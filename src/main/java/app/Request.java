@@ -17,6 +17,7 @@ import java.io.IOException;
 public class Request {
 
     private final String URL = "http://timesofindia.indiatimes.com/feeds/newsdefaultfeeds.cms?feedtype=sjson";
+    private final String NO_PHOTO_AVAILABLE_URL = "http://pm1.narvii.com/6507/2d99280070544e83762e96a15409d7651e32094d_128.jpg";
     private String json = "";
 
     public void start() {
@@ -49,12 +50,21 @@ public class Request {
         int firstIndex = temp.indexOf("\"Photo\":\"");
         int lastIndex = temp.indexOf("\",\"Thumb\":\"");
         String s = temp.substring(firstIndex + 9, lastIndex);
-        news.setPhoto(s);
+        if (s.length() == 53) {
+            news.setPhoto(NO_PHOTO_AVAILABLE_URL);
+        } else {
+            news.setPhoto(s);
+        }
 
         firstIndex = temp.indexOf("\"Thumb\":\"");
         lastIndex = temp.lastIndexOf("\",\"");
         temp = temp.substring(firstIndex + 9, lastIndex);
-        news.setThumb(temp);
+        if (temp.length() == 53) {
+            news.setThumb(NO_PHOTO_AVAILABLE_URL);
+            System.out.println("news.getThumb() = " + news.getThumb());
+        } else {
+            news.setThumb(temp);
+        }
 
         return news;
     }

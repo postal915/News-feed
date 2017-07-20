@@ -8,8 +8,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.text.TextFlow;
 import javafx.util.Callback;
 
 import java.net.URL;
@@ -49,9 +47,7 @@ public class Controller implements Initializable {
                             setGraphic(null);
                         } else {
                             setText(item.getHeadLine());
-                            pImageView.setImage(new Image(item.getImage()));
-                            imageView.setFitHeight(100);
-                            imageView.setFitWidth(100);
+                            pImageView.setImage(new Image(item.getThumb()));
                             setGraphic(pImageView);
                         }
                     }
@@ -66,14 +62,17 @@ public class Controller implements Initializable {
                 textArea.setText("");
             }else {
                 headTextField.setText(newValue.getHeadLine());
-                imageView.setImage(new Image(newValue.getImage()));
+                imageView.setImage(new Image(newValue.getPhoto()));
                 textArea.setText(newValue.getStory());
             }
         });
+
+        new Request().start();
     }
 
     public void refresh(ActionEvent event){
         newsObservableList.clear();
+        new Request().start();
     }
 
 }

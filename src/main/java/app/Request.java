@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import javafx.application.Platform;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
@@ -21,10 +22,12 @@ public class Request {
     private String json = "";
 
     public void start() {
-        new Thread(() -> {
+
+        Platform.runLater(() -> {
             request();
             parser();
-        }).start();
+            System.out.println("json = " + json);
+        });
     }
 
     private void parser() {
@@ -61,7 +64,6 @@ public class Request {
         temp = temp.substring(firstIndex + 9, lastIndex);
         if (temp.length() == 53) {
             news.setThumb(NO_PHOTO_AVAILABLE_URL);
-            System.out.println("news.getThumb() = " + news.getThumb());
         } else {
             news.setThumb(temp);
         }

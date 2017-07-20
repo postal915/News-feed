@@ -8,6 +8,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.util.Callback;
 
 import java.net.URL;
@@ -20,24 +22,38 @@ public class Controller implements Initializable {
     @FXML
     public Button refreshButton;
     @FXML
-    public TextField headTextField;
-    @FXML
     public ImageView imageView;
     @FXML
-    public TextArea textArea;
+    public TextFlow headTextFlow;
+    @FXML
+    public TextFlow newsTextFlow;
 
     public static ObservableList<News> newsObservableList = FXCollections.observableArrayList();
-
+    Text headText = new Text();
+    Text storyText = new Text();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         listView.setItems(newsObservableList);
+        headTextFlow.getChildren().add(headText);
+        newsTextFlow.getChildren().add(storyText);
+        headText.setY(10);
+        addListView();
+        viewNews();
+        new Request().start();
+    }
 
+    public void refresh(ActionEvent event){
+        newsObservableList.clear();
+        new Request().start();
+    }
+
+    private void addListView(){
         listView.setCellFactory(new Callback<ListView<News>, ListCell<News>>() {
             @Override
             public ListCell<News> call(ListView<News> param) {
                 return new ListCell<News>(){
-                   private ImageView pImageView = new ImageView();
+                    private ImageView pImageView = new ImageView();
 
                     @Override
                     protected void updateItem(News item, boolean empty) {
@@ -54,25 +70,19 @@ public class Controller implements Initializable {
                 };
             }
         });
+    }
 
+    private void viewNews(){
         listView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == null){
-                headTextField.setText("");
-                imageView.setImage(new Image(""));
-                textArea.setText("");
+                headText.setText("");
+                imageView.setImage(null);
+                storyText.setText("");
             }else {
-                headTextField.setText(newValue.getHeadLine());
+                headText.setText(newValue.getHeadLine());
                 imageView.setImage(new Image(newValue.getPhoto()));
-                textArea.setText(newValue.getStory());
+                storyText.setText(newValue.getStory());
             }
         });
-
-        new Request().start();
     }
-
-    public void refresh(ActionEvent event){
-        newsObservableList.clear();
-        new Request().start();
-    }
-
 }

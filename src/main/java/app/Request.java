@@ -20,8 +20,10 @@ public class Request {
     private String json = "";
 
     public void start() {
-        request();
-        parser();
+        new Thread(() -> {
+            request();
+            parser();
+        }).start();
     }
 
     private void parser() {
@@ -32,21 +34,29 @@ public class Request {
             JsonObject object = jsonElement.getAsJsonObject();
             News news = new News();
 
-            news.setNewsItemId(object.get("NewsItemId").toString());
             news.setHeadLine(object.get("HeadLine").toString());
-            news.setAgency(object.get("Agency").toString());
-            news.setDateLine(object.get("DateLine").toString());
-            news.setWebURL(object.get("WebURL").toString());
-            news.setCaption(object.get("Caption").toString());
-            news.setImage(object.get("Image").toString());
-            news.setKeywords(object.get("Keywords").toString());
-            news.setStory(object.get("Story").toString());
-            news.setCommentCountUrl(object.get("CommentCountUrl").toString());
-            news.setCommentFeedUrl(object.get("CommentFeedUrl").toString());
-            news.setRelated(object.get("Related").toString());
+            String temp = object.get("Image").toString();
+            news = parserPhoto(news, temp);
 
-            Controller.fxCollections.add(news);
+            news.setStory(object.get("Story").toString());
+
+            Controller.newsObservableList.add(news);
         }
+    }
+
+    private News parserPhoto(News news, String temp) {
+
+        int firstIndex = temp.indexOf("\"Photo\":\"");
+        int lastIndex = temp.indexOf("\",\"Thumb\":\"");
+        String s = temp.substring(firstIndex + 9, lastIndex);
+        news.setPhoto(s);
+
+        firstIndex = temp.indexOf("\"Thumb\":\"");
+        lastIndex = temp.lastIndexOf("\",\"");
+        temp = temp.substring(firstIndex + 9, lastIndex);
+        news.setThumb(temp);
+
+        return news;
     }
 
     private void request() {

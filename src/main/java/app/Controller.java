@@ -1,5 +1,6 @@
 package app;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -34,13 +35,15 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        listView.setItems(newsObservableList);
+
+        new Request().start();
         headTextFlow.getChildren().add(headText);
         newsTextFlow.getChildren().add(storyText);
         headText.setY(10);
         addListView();
         viewNews();
-        new Request().start();
+        listView.setItems(newsObservableList);
+
     }
 
     public void refresh(ActionEvent event){
@@ -63,7 +66,7 @@ public class Controller implements Initializable {
                             setGraphic(null);
                         } else {
                             setText(item.getHeadLine());
-                            pImageView.setImage(new Image(item.getThumb()));
+                            pImageView.setImage(item.getThumbImage());
                             setGraphic(pImageView);
                         }
                     }
@@ -80,7 +83,7 @@ public class Controller implements Initializable {
                 storyText.setText("");
             }else {
                 headText.setText(newValue.getHeadLine());
-                imageView.setImage(new Image(newValue.getPhoto()));
+                imageView.setImage(newValue.getPhotoImage());
                 storyText.setText(newValue.getStory());
             }
         });

@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import javafx.application.Platform;
+import javafx.scene.image.Image;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
@@ -17,17 +18,22 @@ import java.io.IOException;
 
 public class Request {
 
+
     private final String URL = "http://timesofindia.indiatimes.com/feeds/newsdefaultfeeds.cms?feedtype=sjson";
     private final String NO_PHOTO_AVAILABLE_URL = "http://pm1.narvii.com/6507/2d99280070544e83762e96a15409d7651e32094d_128.jpg";
     private String json = "";
 
     public void start() {
-
         Platform.runLater(() -> {
             request();
             parser();
-            System.out.println("json = " + json);
         });
+
+//        new Thread(() -> {
+//            request();
+//            parser();
+//        }).start();
+
     }
 
     private void parser() {
@@ -41,7 +47,6 @@ public class Request {
             news.setHeadLine(object.get("HeadLine").toString());
             String temp = object.get("Image").toString();
             news = parserPhoto(news, temp);
-
             news.setStory(object.get("Story").toString());
 
             Controller.newsObservableList.add(news);
@@ -54,18 +59,18 @@ public class Request {
         int lastIndex = temp.indexOf("\",\"Thumb\":\"");
         String s = temp.substring(firstIndex + 9, lastIndex);
         if (s.length() == 53) {
-            news.setPhoto(NO_PHOTO_AVAILABLE_URL);
+            news.setPhotoImage(new Image(NO_PHOTO_AVAILABLE_URL));
         } else {
-            news.setPhoto(s);
+            news.setPhotoImage(new Image(s));
         }
 
         firstIndex = temp.indexOf("\"Thumb\":\"");
         lastIndex = temp.lastIndexOf("\",\"");
         temp = temp.substring(firstIndex + 9, lastIndex);
         if (temp.length() == 53) {
-            news.setThumb(NO_PHOTO_AVAILABLE_URL);
+            news.setThumbImage(new Image(NO_PHOTO_AVAILABLE_URL));
         } else {
-            news.setThumb(temp);
+            news.setThumbImage(new Image(temp));
         }
 
         return news;

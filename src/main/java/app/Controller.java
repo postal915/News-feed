@@ -1,17 +1,18 @@
 package app;
 
-import javafx.application.Platform;
+import app.dto.NewsItem;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-import javafx.util.Callback;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -19,7 +20,7 @@ import java.util.ResourceBundle;
 public class Controller implements Initializable {
 
     @FXML
-    public ListView<News> listView;
+    public ListView<NewsItem> listView;
     @FXML
     public Button refreshButton;
     @FXML
@@ -29,61 +30,60 @@ public class Controller implements Initializable {
     @FXML
     public TextFlow newsTextFlow;
 
-    public static ObservableList<News> newsObservableList = FXCollections.observableArrayList();
+    ObservableList<NewsItem> newsObservableList = FXCollections.observableArrayList();
+    private Request request = new Request();
+
     Text headText = new Text();
     Text storyText = new Text();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
-        new Request().start();
         headTextFlow.getChildren().add(headText);
         newsTextFlow.getChildren().add(storyText);
         headText.setY(10);
         addListView();
         viewNews();
         listView.setItems(newsObservableList);
-
+        updateNews();
     }
 
-    public void refresh(ActionEvent event){
+    public void refresh(ActionEvent event) {
         newsObservableList.clear();
-        new Request().start();
+        updateNews();
     }
 
-    private void addListView(){
-        listView.setCellFactory(new Callback<ListView<News>, ListCell<News>>() {
-            @Override
-            public ListCell<News> call(ListView<News> param) {
-                return new ListCell<News>(){
-                    private ImageView pImageView = new ImageView();
+    private void updateNews() {
+        request.getNews(newsList -> newsObservableList.setAll(newsList));
+    }
 
-                    @Override
-                    protected void updateItem(News item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (empty){
-                            setText(null);
-                            setGraphic(null);
-                        } else {
-                            setText(item.getHeadLine());
-                            pImageView.setImage(item.getThumbImage());
-                            setGraphic(pImageView);
-                        }
-                    }
-                };
+    private void addListView() {
+        listView.setCellFactory(param -> new ListCell<NewsItem>() {
+            private ImageView pImageView = new ImageView();
+
+            @Override
+            protected void updateItem(NewsItem item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    setText(item.getHeadLine());
+                    pImageView.setImage(new Image(item.getImage().getThumb()));
+                    setGraphic(pImageView);
+                }
             }
         });
     }
 
-    private void viewNews(){
+    private void viewNews() {
         listView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue == null){
+            if (newValue == null) {
                 headText.setText("");
                 imageView.setImage(null);
                 storyText.setText("");
-            }else {
+            } else {
                 headText.setText(newValue.getHeadLine());
-                imageView.setImage(newValue.getPhotoImage());
+                imageView.setImage(new Image(newValue.getImage().getPhoto()));
                 storyText.setText(newValue.getStory());
             }
         });

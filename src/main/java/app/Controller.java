@@ -9,7 +9,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -35,6 +34,7 @@ public class Controller implements Initializable {
 
     Text headText = new Text();
     Text storyText = new Text();
+    Thread thread;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -68,7 +68,10 @@ public class Controller implements Initializable {
                     setGraphic(null);
                 } else {
                     setText(item.getHeadLine());
-                    pImageView.setImage(new Image(item.getImage().getThumb()));
+                    RequestImage requestImage = new RequestImage(item.getImage().getPhoto(), item.getImage().getThumb(), "thumb");
+                    thread = new Thread(requestImage);
+                    thread.run();
+                    pImageView.setImage(requestImage.getThumb());
                     setGraphic(pImageView);
                 }
             }
@@ -83,7 +86,10 @@ public class Controller implements Initializable {
                 storyText.setText("");
             } else {
                 headText.setText(newValue.getHeadLine());
-                imageView.setImage(new Image(newValue.getImage().getPhoto()));
+                RequestImage requestImage = new RequestImage(newValue.getImage().getPhoto(), newValue.getImage().getThumb(), "photo");
+                thread = new Thread(requestImage);
+                thread.run();
+                imageView.setImage(requestImage.getPhoto());
                 storyText.setText(newValue.getStory());
             }
         });

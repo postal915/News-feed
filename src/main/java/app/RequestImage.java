@@ -2,7 +2,7 @@ package app;
 
 import javafx.scene.image.Image;
 
-public class RequestImage implements Runnable {
+public class RequestImage extends Thread {
 
     private String photoUrl;
     private String thumbUrl;

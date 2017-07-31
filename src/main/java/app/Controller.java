@@ -34,7 +34,6 @@ public class Controller implements Initializable {
 
     Text headText = new Text();
     Text storyText = new Text();
-    Thread thread;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -69,8 +68,12 @@ public class Controller implements Initializable {
                 } else {
                     setText(item.getHeadLine());
                     RequestImage requestImage = new RequestImage(item.getImage().getPhoto(), item.getImage().getThumb(), "thumb");
-                    thread = new Thread(requestImage);
-                    thread.run();
+                    requestImage.start();
+                    try {
+                        requestImage.join();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     pImageView.setImage(requestImage.getThumb());
                     setGraphic(pImageView);
                 }
@@ -87,8 +90,12 @@ public class Controller implements Initializable {
             } else {
                 headText.setText(newValue.getHeadLine());
                 RequestImage requestImage = new RequestImage(newValue.getImage().getPhoto(), newValue.getImage().getThumb(), "photo");
-                thread = new Thread(requestImage);
-                thread.run();
+                requestImage.start();
+                try {
+                    requestImage.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 imageView.setImage(requestImage.getPhoto());
                 storyText.setText(newValue.getStory());
             }

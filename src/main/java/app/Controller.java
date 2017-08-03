@@ -9,6 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -67,14 +68,7 @@ public class Controller implements Initializable {
                     setGraphic(null);
                 } else {
                     setText(item.getHeadLine());
-                    RequestImage requestImage = new RequestImage(item.getImage().getPhoto(), item.getImage().getThumb(), "thumb");
-                    requestImage.start();
-                    try {
-                        requestImage.join();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    pImageView.setImage(requestImage.getThumb());
+                    pImageView.setImage(new Image(item.getImage().getThumb(), true));
                     setGraphic(pImageView);
                 }
             }
@@ -89,14 +83,7 @@ public class Controller implements Initializable {
                 storyText.setText("");
             } else {
                 headText.setText(newValue.getHeadLine());
-                RequestImage requestImage = new RequestImage(newValue.getImage().getPhoto(), newValue.getImage().getThumb(), "photo");
-                requestImage.start();
-                try {
-                    requestImage.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                imageView.setImage(requestImage.getPhoto());
+                imageView.setImage(new Image(newValue.getImage().getPhoto(), true));
                 storyText.setText(newValue.getStory());
             }
         });
